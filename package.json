@@ -1,0 +1,41 @@
+{
+  "name": "smart-workload-system",
+  "version": "1.0.0",
+  "description": "Smart Workload Capacity Analysis and Task Allocation System - Microservices",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm --prefix gateway install && npm --prefix frontend install",
+    "install:gateway": "npm --prefix gateway install",
+    "install:user": "npm --prefix services/user-service install",
+    "install:project": "npm --prefix services/project-service install",
+    "install:task": "npm --prefix services/task-service install",
+    "install:capacity": "npm --prefix services/capacity-service install",
+    "install:report": "npm --prefix services/report-service install",
+    "install:notification": "npm --prefix services/notification-service install",
+    "install:frontend": "npm --prefix frontend install",
+    "start:gateway": "node gateway/server.js",
+    "start:user": "node services/user-service/server.js",
+    "start:project": "node services/project-service/server.js",
+    "start:task": "node services/task-service/server.js",
+    "start:capacity": "node services/capacity-service/server.js",
+    "start:report": "node services/report-service/server.js",
+    "start:notification": "node services/notification-service/server.js",
+    "start:frontend": "npm --prefix frontend run dev",
+    "start:services": "node start-all.js",
+    "seed": "node seed.js",
+    "dev": "node start-all.js --with-frontend"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.6.0",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.15"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^11.3.0"
+  }
+}
