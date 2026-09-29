@@ -1,53 +1,144 @@
 classDiagram
     class User {
-      +String name
-      +String email
-      +String password
+        +String userId
+        +String username
+        +String email
+        +String passwordHash
+        +login()
+        +logout()
     }
     class Role {
-      +String roleName
+        +String roleId
+        +String roleName
+        +List~String~ permissions
+    }
+    class UserRole {
+        +String userId
+        +String roleId
     }
     class Employee {
-      +String designation
-      +String status
+        +String employeeId
+        +String designation
+        +String department
+        +updateProfile()
     }
     class Team {
-      +String teamName
+        +String teamId
+        +String teamName
+        +String managerId
+        +addMember()
+    }
+    class TeamMember {
+        +String teamId
+        +String employeeId
+        +Date joinedAt
     }
     class Project {
-      +String projectName
-      +Date startDate
-      +Date endDate
+        +String projectId
+        +String name
+        +String status
+        +Date startDate
+        +Date endDate
+        +updateStatus()
     }
     class Sprint {
-      +String sprintName
-      +Date startDate
-      +Date endDate
+        +String sprintId
+        +String projectId
+        +String name
+        +Date startDate
+        +Date endDate
+        +startSprint()
     }
     class Task {
-      +String title
-      +String priority
-      +Number estimated_effort
-      +String status
+        +String taskId
+        +String sprintId
+        +String title
+        +String description
+        +String status
+        +Int estimatedEffort
+        +assign()
+        +updateProgress()
+    }
+    class TaskAssignment {
+        +String assignmentId
+        +String taskId
+        +String employeeId
+        +Int allocatedEffort
+        +String status
+    }
+    class TimeLog {
+        +String logId
+        +String assignmentId
+        +Date date
+        +Float loggedHours
+        +String notes
     }
     class Availability {
-      +Date date
-      +Number available_hours
-      +Number meeting_hours
-      +Number leave_hours
+        +String availabilityId
+        +String employeeId
+        +Date date
+        +Float availableHours
+        +Float meetingHours
+        +Float leaveHours
+        +Float nonProjectHours
     }
     class Workload {
-      +Date date
-      +Number effective_capacity
-      +Number workload_percentage
-      +String utilization_status
+        +String workloadId
+        +String employeeId
+        +Date date
+        +Float totalAssignedEffort
+        +Float workloadPercentage
+        +String status
     }
+    class CapacityAnalysis {
+        +String analysisId
+        +String employeeId
+        +Date analysisDate
+        +Float effectiveCapacity
+        +Float remainingCapacity
+        +generateRecommendation()
+    }
+    class Report {
+        +String reportId
+        +String reportType
+        +Date generatedAt
+        +String format
+        +export()
+    }
+    class Notification {
+        +String notificationId
+        +String userId
+        +String message
+        +String type
+        +Boolean isRead
+        +markAsRead()
+    }
+    class SystemSetting {
+        +String settingId
+        +String key
+        +String value
+        +String description
+        +updateSetting()
+    }
+
+    User "1" -- "*" UserRole
+    Role "1" -- "*" UserRole
+    User <|-- Employee
+    Team "1" *-- "*" TeamMember
+    Employee "1" -- "*" TeamMember
     
-    User "1" *-- "1" Employee
-    User "1" -- "*" Role : has
-    Employee "*" -- "*" Team : member
     Project "1" *-- "*" Sprint
     Sprint "1" *-- "*" Task
-    Task "*" -- "1" Employee : assigned_to
+    Task "1" *-- "*" TaskAssignment
+    Employee "1" -- "*" TaskAssignment
+    TaskAssignment "1" *-- "*" TimeLog
+    
     Employee "1" *-- "*" Availability
     Employee "1" *-- "*" Workload
+    Employee "1" *-- "*" CapacityAnalysis
+    
+    User "1" -- "*" Notification
+    
+    SystemSetting "1" -- "*" Report : Generated Config
+    Workload "*" -- "1" Report : Includes
+    CapacityAnalysis "*" -- "1" Report : Includes

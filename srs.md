@@ -8,7 +8,7 @@
 **Institution:** [Insert Institution Name]
 **Department:** [Insert Department Name]
 **Project Guide:** [Insert Project Guide Name]
-**Date:** September 27, 2026
+**Date:** 27 September 2026
 
 ---
 
@@ -42,15 +42,15 @@
    3.3 Software Interfaces
    3.4 Communications Interfaces
 4. SYSTEM FEATURES
-   4.1 User Authentication and Authorization
-   4.2 User, Role, and Team Management
+   4.1 Authentication and User Management
+   4.2 Role and Team Management
    4.3 Project and Sprint Management
-   4.4 Task Management and Assignment
-   4.5 Employee Availability Management
-   4.6 Capacity and Workload Calculation
-   4.7 Rule-Based Task Allocation Recommendation
-   4.8 Reporting and Dashboard Management
-   4.9 Notification Management
+   4.4 Task Management
+   4.5 Employee Availability and Capacity
+   4.6 Workload Analysis
+   4.7 Rule-Based Task Recommendation
+   4.8 Reports and Export
+   4.9 Notifications
 5. OTHER NONFUNCTIONAL REQUIREMENTS
    5.1 Performance Requirements
    5.2 Safety Requirements
@@ -251,7 +251,7 @@ The system requires standard hardware:
 
 ## 4. SYSTEM FEATURES
 
-### 4.1 User Authentication and Authorization
+### 4.1 Authentication and User Management
 **4.1.1 Description and Priority**
 Allows users to securely register, log in, and access role-restricted areas of the system. (Priority: High)
 
@@ -260,11 +260,26 @@ Allows users to securely register, log in, and access role-restricted areas of t
 - *Response:* System validates credentials, issues a signed JWT, and grants dashboard access.
 
 **4.1.3 Functional Requirements**
-- REQ-001: The system shall allow users to authenticate using an email and password.
-- REQ-002: The system shall generate and return a signed JWT upon successful authentication.
-- REQ-003: The system shall restrict protected API routes based on the authenticated user's role.
+**REQ-001: User Authentication**
+- **Description:** The system shall allow users to authenticate using an email and password.
+- **Inputs / Preconditions:** Email and password credentials
+- **Processing / Business Logic:** Validate credentials and verify user status
+- **Expected Output / Postconditions:** Signed JWT and user role details
 
-### 4.2 User, Role, and Team Management
+**REQ-002: JWT Generation**
+- **Description:** The system shall generate and return a signed JWT upon successful authentication.
+- **Inputs / Preconditions:** Valid user credentials
+- **Processing / Business Logic:** Sign JWT with secret key containing user ID and role
+- **Expected Output / Postconditions:** Signed JWT token string
+
+**REQ-003: Role-Based Route Restriction**
+- **Description:** The system shall restrict protected API routes based on the authenticated user's role.
+- **Inputs / Preconditions:** HTTP request with JWT
+- **Processing / Business Logic:** Verify JWT and check if user role is authorized for the endpoint
+- **Expected Output / Postconditions:** HTTP 200 OK if authorized, otherwise HTTP 403/401 Error
+
+
+### 4.2 Role and Team Management
 **4.2.1 Description and Priority**
 Allows Administrators to manage the workforce structure. (Priority: Medium)
 
@@ -273,9 +288,24 @@ Allows Administrators to manage the workforce structure. (Priority: Medium)
 - *Response:* System updates the TeamMember records in the database.
 
 **4.2.3 Functional Requirements**
-- REQ-004: The system shall allow Administrators to create, read, update, and delete user accounts.
-- REQ-005: The system shall allow Administrators to assign and modify user roles.
-- REQ-006: The system shall allow Administrators to create Teams and assign Employees to them.
+**REQ-004: User CRUD Operations**
+- **Description:** The system shall allow Administrators to create, read, update, and delete user accounts.
+- **Inputs / Preconditions:** Admin input data for user account
+- **Processing / Business Logic:** Perform CRUD operation on User and Employee collections
+- **Expected Output / Postconditions:** Updated database record and confirmation response
+
+**REQ-005: Role Assignment**
+- **Description:** The system shall allow Administrators to assign and modify user roles.
+- **Inputs / Preconditions:** Admin input specifying user and role
+- **Processing / Business Logic:** Update UserRole record in database
+- **Expected Output / Postconditions:** Updated role assignment
+
+**REQ-006: Team and Member Management**
+- **Description:** The system shall allow Administrators to create Teams and assign Employees to them.
+- **Inputs / Preconditions:** Team details and employee selections
+- **Processing / Business Logic:** Create Team and TeamMember records
+- **Expected Output / Postconditions:** New team structure saved in database
+
 
 ### 4.3 Project and Sprint Management
 **4.3.1 Description and Priority**
@@ -286,10 +316,20 @@ Allows Managers to structure work into projects and time-boxed sprints. (Priorit
 - *Response:* System creates the sprint and links it to the parent project.
 
 **4.3.3 Functional Requirements**
-- REQ-007: The system shall allow Project Managers to create and edit projects.
-- REQ-008: The system shall allow Project Managers to create sprints linked to a specific project.
+**REQ-007: Project Management**
+- **Description:** The system shall allow Project Managers to create and edit projects.
+- **Inputs / Preconditions:** Project details (name, description, dates)
+- **Processing / Business Logic:** Create/Update Project record
+- **Expected Output / Postconditions:** Saved Project entity
 
-### 4.4 Task Management and Assignment
+**REQ-008: Sprint Management**
+- **Description:** The system shall allow Project Managers to create sprints linked to a specific project.
+- **Inputs / Preconditions:** Sprint timeline and parent project ID
+- **Processing / Business Logic:** Create Sprint record linked to Project
+- **Expected Output / Postconditions:** Saved Sprint entity
+
+
+### 4.4 Task Management
 **4.4.1 Description and Priority**
 Allows Managers to define work items and Employees to update progress. (Priority: High)
 
@@ -298,12 +338,32 @@ Allows Managers to define work items and Employees to update progress. (Priority
 - *Response:* System records the TaskAssignment and triggers workload recalculation.
 
 **4.4.3 Functional Requirements**
-- REQ-009: The system shall allow Project Managers to create tasks with priority and estimated effort.
-- REQ-010: The system shall allow Project Managers to assign and reassign tasks to Employees.
-- REQ-011: The system shall allow Employees to view their assigned tasks.
-- REQ-012: The system shall allow Employees to update the status, progress, and actual effort of their assigned tasks.
+**REQ-009: Task Creation**
+- **Description:** The system shall allow Project Managers to create tasks with priority and estimated effort.
+- **Inputs / Preconditions:** Task details including effort and priority
+- **Processing / Business Logic:** Create Task record linked to sprint/project
+- **Expected Output / Postconditions:** Saved Task entity
 
-### 4.5 Employee Availability Management
+**REQ-010: Task Assignment and Reassignment**
+- **Description:** The system shall allow Project Managers to assign and reassign tasks to Employees.
+- **Inputs / Preconditions:** Task ID and Employee ID
+- **Processing / Business Logic:** Create/Update TaskAssignment record and trigger capacity recalculation
+- **Expected Output / Postconditions:** Task assigned to employee, workload recalculated
+
+**REQ-011: Personal Task Viewing**
+- **Description:** The system shall allow Employees to view their assigned tasks.
+- **Inputs / Preconditions:** Employee JWT
+- **Processing / Business Logic:** Query TaskAssignments for authenticated employee
+- **Expected Output / Postconditions:** List of assigned tasks
+
+**REQ-012: Task Progress Updates**
+- **Description:** The system shall allow Employees to update the status, progress, and actual effort of their assigned tasks.
+- **Inputs / Preconditions:** Task progress details
+- **Processing / Business Logic:** Update Task and TaskAssignment, recalculate capacity
+- **Expected Output / Postconditions:** Updated task status and workload
+
+
+### 4.5 Employee Availability and Capacity
 **4.5.1 Description and Priority**
 Allows the tracking of meetings and leave for capacity calculation. (Priority: High)
 
@@ -312,9 +372,14 @@ Allows the tracking of meetings and leave for capacity calculation. (Priority: H
 - *Response:* System stores the availability record for the specific date.
 
 **4.5.3 Functional Requirements**
-- REQ-013: The system shall allow Employees to log daily availability including meeting hours, leave hours, and non-project hours.
+**REQ-013: Availability Logging**
+- **Description:** The system shall allow Employees to log daily availability including meeting hours, leave hours, and non-project hours.
+- **Inputs / Preconditions:** Availability details for a specific date
+- **Processing / Business Logic:** Store Availability record for employee
+- **Expected Output / Postconditions:** Saved availability log
 
-### 4.6 Capacity and Workload Calculation
+
+### 4.6 Workload Analysis
 **4.6.1 Description and Priority**
 Calculates real-time availability and workload thresholds based on stored data. (Priority: High)
 
@@ -323,12 +388,32 @@ Calculates real-time availability and workload thresholds based on stored data. 
 - *Response:* System recalculates the employee's workload percentage based on their effective capacity.
 
 **4.6.3 Functional Requirements**
-- REQ-014: The system shall calculate Effective Capacity as: `Max(0, Available Hours - Meeting Hours - Leave Hours - Non-Project Hours)`.
-- REQ-015: The system shall calculate Remaining Capacity as: `Max(0, Effective Capacity - Assigned Task Effort)`.
-- REQ-016: The system shall calculate Workload Percentage as `(Assigned Effort / Effective Capacity) * 100`.
-- REQ-017: The system shall classify workload based on configured thresholds (Low <= 60%, Normal <= 80%, High <= 100%, Overloaded > 100%).
+**REQ-014: Effective Capacity Calculation**
+- **Description:** The system shall calculate Effective Capacity as: Max(0, Available Hours - Meeting Hours - Leave Hours - Non-Project Hours).
+- **Inputs / Preconditions:** Employee availability data
+- **Processing / Business Logic:** Apply effective capacity formula ensuring non-negative result
+- **Expected Output / Postconditions:** Calculated Effective Capacity (hours)
 
-### 4.7 Rule-Based Task Allocation Recommendation
+**REQ-015: Remaining Capacity Calculation**
+- **Description:** The system shall calculate Remaining Capacity as: Max(0, Effective Capacity - Assigned Task Effort).
+- **Inputs / Preconditions:** Effective capacity and sum of assigned active task efforts
+- **Processing / Business Logic:** Apply remaining capacity formula ensuring non-negative result
+- **Expected Output / Postconditions:** Calculated Remaining Capacity (hours)
+
+**REQ-016: Workload Percentage Calculation**
+- **Description:** The system shall calculate Workload Percentage as (Assigned Effort / Effective Capacity) * 100.
+- **Inputs / Preconditions:** Assigned effort and effective capacity
+- **Processing / Business Logic:** Apply workload percentage formula (handle zero capacity gracefully)
+- **Expected Output / Postconditions:** Calculated Workload Percentage (%)
+
+**REQ-017: Workload Classification**
+- **Description:** The system shall classify workload based on configured thresholds (Low <= 60%, Normal <= 80%, High <= 100%, Overloaded > 100%).
+- **Inputs / Preconditions:** Calculated workload percentage
+- **Processing / Business Logic:** Evaluate percentage against static thresholds
+- **Expected Output / Postconditions:** Workload status string (Low, Normal, High, Overloaded)
+
+
+### 4.7 Rule-Based Task Recommendation
 **4.7.1 Description and Priority**
 Provides data-driven suggestions for task assignments based on capacity rules. (Priority: High)
 
@@ -337,11 +422,27 @@ Provides data-driven suggestions for task assignments based on capacity rules. (
 - *Response:* System evaluates eligible employees using workload rules and returns a recommendation.
 
 **4.7.3 Functional Requirements**
-- REQ-018: The system shall provide a rule-based task allocation recommendation engine.
-- REQ-019: The system shall evaluate eligible employees and filter those where `Remaining Capacity >= Task Effort`.
-- REQ-020: The system shall rank suitable candidates prioritizing those with the lowest projected Workload Percentage.
+**REQ-018: Rule-Based Recommendation Engine**
+- **Description:** The system shall provide a rule-based task allocation recommendation engine.
+- **Inputs / Preconditions:** Task effort estimation
+- **Processing / Business Logic:** Analyze all team members capacities and workloads
+- **Expected Output / Postconditions:** Ranked list of recommended employees
 
-### 4.8 Reporting and Dashboard Management
+**REQ-019: Recommendation Filtering**
+- **Description:** The system shall evaluate eligible employees and filter those where Remaining Capacity >= Task Effort.
+- **Inputs / Preconditions:** Task effort and employee capacities
+- **Processing / Business Logic:** Filter out employees lacking sufficient remaining capacity
+- **Expected Output / Postconditions:** Filtered list of eligible candidates
+
+**REQ-020: Recommendation Ranking**
+- **Description:** The system shall rank suitable candidates prioritizing those with the lowest projected Workload Percentage.
+- **Inputs / Preconditions:** Filtered eligible candidates
+- **Processing / Business Logic:** Calculate projected workload if task assigned, sort ascending
+- **Expected Output / Postconditions:** Sorted list of recommended candidates
+
+
+
+### 4.8 Reports and Export
 **4.8.1 Description and Priority**
 Provides capacity and workload analytics for HR and Managers. (Priority: Medium)
 
@@ -350,10 +451,19 @@ Provides capacity and workload analytics for HR and Managers. (Priority: Medium)
 - *Response:* System generates a CSV file and provides a download link.
 
 **4.8.3 Functional Requirements**
-- REQ-021: The system shall generate organization-wide Workload and Capacity utilization reports.
-- REQ-022: The system shall allow authorized roles to export generated reports in CSV format.
+**REQ-021: Organization Reports**
+- **Description:** The system shall generate organization-wide Workload and Capacity utilization reports, including Employee workload, Team workload, Capacity analysis, and Historical workload data. The report UI distinguishes historical workload data from current employee workload data.
+- **Inputs / Preconditions:** Report parameters (type, scope)
+- **Processing / Business Logic:** Aggregate capacity and workload data across all active employees
+- **Expected Output / Postconditions:** JSON report data structure
 
-### 4.9 Notification Management
+**REQ-022: CSV Report Export**
+- **Description:** The system shall allow authorized roles to export generated reports in CSV format.
+- **Inputs / Preconditions:** JSON report data
+- **Processing / Business Logic:** Convert JSON data to CSV format and store via Storage Adapter
+- **Expected Output / Postconditions:** Downloadable CSV file URL
+
+### 4.9 Notifications
 **4.9.1 Description and Priority**
 Generates alerts for key workflow events. (Priority: Low)
 
@@ -362,7 +472,12 @@ Generates alerts for key workflow events. (Priority: Low)
 - *Response:* System generates a notification record for the Employee.
 
 **4.9.3 Functional Requirements**
-- REQ-023: The system shall generate notifications when tasks are assigned or reassigned.
+**REQ-023: Workflow Notifications**
+- **Description:** The system shall generate notifications when tasks are assigned or reassigned.
+- **Inputs / Preconditions:** Task assignment event
+- **Processing / Business Logic:** Create Notification record and trigger email adapter
+- **Expected Output / Postconditions:** Stored notification and dispatched email
+
 
 ---
 
@@ -485,7 +600,6 @@ The following features are not currently implemented but are recommended for fut
 ![Deployment Diagram](docs/diagrams/09-deployment-diagram.png)
 **Figure 9: Deployment Diagram**
 
----
 
 ## APPENDIX C — TO BE DETERMINED LIST
 

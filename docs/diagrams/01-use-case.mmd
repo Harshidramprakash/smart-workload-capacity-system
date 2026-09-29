@@ -5,44 +5,39 @@ flowchart LR
     HR([HR / Resource Manager])
     
     subgraph System ["Smart Workload Capacity Analysis and Task Allocation System"]
-        direction TB
-        subgraph AdminUseCases ["Admin"]
-            A1(Register / Login)
-            A2(Manage Users)
-            A3(Assign Roles)
-            A4(Manage Teams)
-            A5(Manage System Settings)
-            A6(View Reports)
-            A7(Logout)
-        end
-        subgraph MgrUseCases ["Project Manager / Team Lead"]
-            M1(Register / Login)
-            M2(Manage Projects & Sprints)
-            M3(Create/Assign/Reassign Tasks)
-            M4(Analyze Capacity)
-            M5(View Team Workload)
-            M6(Receive Task Recommendation)
-            M7(View Reports & Receive Notifications)
-            M8(Logout)
-        end
-        subgraph EmpUseCases ["Employee / Developer"]
-            E1(Register / Login)
-            E2(View Assigned Tasks)
-            E3(Update Task Status/Progress/Actual Effort)
-            E4(Manage Own Availability)
-            E5(View Workload & Receive Notifications)
-            E6(Logout)
-        end
-        subgraph HRUseCases ["HR / Resource Manager"]
-            H1(Register / Login)
-            H2(View Employee Workload & Capacity)
-            H3(View Reports)
-            H4(Export Reports)
-            H5(Logout)
-        end
+        A1(Register / Login) ~~~ A2(Manage Users) ~~~ A3(Assign Roles) ~~~ A4(Manage Teams)
+        A5(Manage System Settings) ~~~ A6(View Reports) ~~~ A7(Logout)
+        M1(Manage Projects & Sprints) ~~~ M2(Create/Assign/Reassign Tasks) ~~~ M3(Analyze Capacity)
+        M4(View Team Workload) ~~~ M5(Receive Task Recommendation)
+        E1(View Assigned Tasks) ~~~ E2(Update Task Status) ~~~ E3(Manage Availability)
+        H1(View Employee Workload & Capacity) ~~~ H2(Export Reports)
     end
     
-    Admin --> AdminUseCases
-    Manager --> MgrUseCases
-    Employee --> EmpUseCases
-    HR --> HRUseCases
+    Admin --> A1
+    Admin --> A2
+    Admin --> A3
+    Admin --> A4
+    Admin --> A5
+    Admin --> A6
+    Admin --> A7
+    
+    Manager --> A1
+    Manager --> M1
+    Manager --> M2
+    Manager --> M3
+    Manager --> M4
+    Manager --> M5
+    Manager --> A6
+    Manager --> A7
+    
+    Employee --> A1
+    Employee --> E1
+    Employee --> E2
+    Employee --> E3
+    Employee --> A7
+    
+    HR --> A1
+    HR --> H1
+    HR --> A6
+    HR --> H2
+    HR --> A7
