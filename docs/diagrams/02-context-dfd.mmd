@@ -1,0 +1,24 @@
+flowchart TD
+    Admin([Admin])
+    Manager([Project Manager / Team Lead])
+    Employee([Employee / Developer])
+    HR([HR / Resource Manager])
+    
+    System(Smart Workload Capacity Analysis and Task Allocation System)
+    
+    Auth[(Authentication / SSO)]
+    Calendar[(Calendar)]
+    HRMS[(HRMS / Leave System)]
+    SMTP[(SMTP)]
+    Storage[(Storage)]
+    
+    Admin <-->|Config & User Data| System
+    Manager <-->|Project, Task, Assignment Data| System
+    Employee <-->|Availability & Task Progress| System
+    HR <-->|Workload Reports & Export Requests| System
+    
+    System <-->|Auth Tokens| Auth
+    System <-->|Meeting Hours| Calendar
+    System <-->|Leave Data| HRMS
+    System -->|Notifications| SMTP
+    System -->|Report Files| Storage

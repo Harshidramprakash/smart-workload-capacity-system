@@ -1,0 +1,39 @@
+flowchart TD
+    Admin([Admin])
+    Manager([Manager])
+    Employee([Employee])
+    HR([HR])
+    
+    S1((1. User Management))
+    S2((2. Project Management))
+    S3((3. Task Management))
+    S4((4. Capacity Analysis))
+    S5((5. Report Management))
+    S6((6. Notification Management))
+    
+    DB[(MongoDB)]
+    
+    Admin -->|User Details| S1
+    S1 -->|Auth Tokens| Admin
+    S1 <-->|Read/Write Users| DB
+    
+    Manager -->|Project/Sprint Details| S2
+    S2 <-->|Read/Write Projects| DB
+    
+    Manager -->|Task & Assignment| S3
+    Employee -->|Task Progress| S3
+    S3 <-->|Read/Write Tasks| DB
+    
+    Employee -->|Availability| S4
+    Manager -->|Recommendation Request| S4
+    S4 <-->|Read Workload| DB
+    
+    HR -->|Report Query| S5
+    S5 -->|CSV Export| HR
+    S5 <-->|Read Analytics| DB
+    
+    S3 -->|Trigger Alert| S6
+    S4 -->|Trigger Alert| S6
+    S6 -->|Email/Toast| Manager
+    S6 -->|Email/Toast| Employee
+    S6 -->|Write Notification| DB

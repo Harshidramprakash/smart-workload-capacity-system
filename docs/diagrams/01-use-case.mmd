@@ -1,0 +1,48 @@
+flowchart LR
+    Admin([Admin])
+    Manager([Project Manager / Team Lead])
+    Employee([Employee / Developer])
+    HR([HR / Resource Manager])
+    
+    subgraph System ["Smart Workload Capacity Analysis and Task Allocation System"]
+        direction TB
+        subgraph AdminUseCases ["Admin"]
+            A1(Register / Login)
+            A2(Manage Users)
+            A3(Assign Roles)
+            A4(Manage Teams)
+            A5(Manage System Settings)
+            A6(View Reports)
+            A7(Logout)
+        end
+        subgraph MgrUseCases ["Project Manager / Team Lead"]
+            M1(Register / Login)
+            M2(Manage Projects & Sprints)
+            M3(Create/Assign/Reassign Tasks)
+            M4(Analyze Capacity)
+            M5(View Team Workload)
+            M6(Receive Task Recommendation)
+            M7(View Reports & Receive Notifications)
+            M8(Logout)
+        end
+        subgraph EmpUseCases ["Employee / Developer"]
+            E1(Register / Login)
+            E2(View Assigned Tasks)
+            E3(Update Task Status/Progress/Actual Effort)
+            E4(Manage Own Availability)
+            E5(View Workload & Receive Notifications)
+            E6(Logout)
+        end
+        subgraph HRUseCases ["HR / Resource Manager"]
+            H1(Register / Login)
+            H2(View Employee Workload & Capacity)
+            H3(View Reports)
+            H4(Export Reports)
+            H5(Logout)
+        end
+    end
+    
+    Admin --> AdminUseCases
+    Manager --> MgrUseCases
+    Employee --> EmpUseCases
+    HR --> HRUseCases

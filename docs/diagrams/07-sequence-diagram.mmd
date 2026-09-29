@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor Manager as Project Manager
+    participant UI as Frontend
+    participant Gateway as API Gateway
+    participant TaskSvc as Task Service
+    participant CapSvc as Capacity Analysis Service
+    participant NotifSvc as Notification Service
+    actor Employee as Employee
+    
+    Manager->>UI: Request task recommendation
+    UI->>Gateway: GET /api/capacity/recommendation
+    Gateway->>CapSvc: Forward request
+    CapSvc-->>Gateway: Return recommendation list
+    Gateway-->>UI: Display recommendation
+    Manager->>UI: Confirm Task Assignment
+    UI->>Gateway: POST /api/tasks/assign
+    Gateway->>TaskSvc: Save TaskAssignment
+    TaskSvc->>CapSvc: Trigger Workload Recalculation
+    CapSvc-->>TaskSvc: Workload updated
+    TaskSvc->>NotifSvc: Trigger Notification
+    NotifSvc->>Employee: Send Assignment Alert
+    TaskSvc-->>Gateway: 200 OK
+    Gateway-->>UI: Success Toast

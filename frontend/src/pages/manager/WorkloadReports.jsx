@@ -1,5 +1,5 @@
 // src/pages/manager/WorkloadReports.jsx - Workload & Capacity Reports
-import { useState } from 'react';
+import React, { useState } from 'react';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 
@@ -8,6 +8,7 @@ const WorkloadReports = () => {
   const [reportData, setReportData] = useState(null);
   const [exportInfo, setExportInfo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [expandedRow, setExpandedRow] = useState(null);
   const { addToast } = useToast();
 
   const generateReport = async () => {
@@ -40,6 +41,7 @@ const WorkloadReports = () => {
   };
 
   const isTeamReport = reportType === 'team' || reportData?.reportType === 'Team Workload';
+  const isHistoricalReport = reportData?.reportType === 'Historical Workload';
   const rows = reportData?.data || [];
 
   return (
@@ -166,6 +168,50 @@ const WorkloadReports = () => {
                   )}
                 </tbody>
               </table>
+            ) : isHistoricalReport ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Effective Capacity</th>
+                    <th>Workload %</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((d, i) => {
+                    const name = d.employeeName || d.name || 'Unknown';
+                    const capacity = d.effectiveCapacity ?? d.effective_capacity ?? '-';
+                    const percentage = d.workloadPercentage ?? d.workload_percentage ?? '-';
+                    const status = d.utilizationStatus ?? d.utilization_status ?? 'Normal';
+                    const dateStr = d.date ? new Date(d.date).toLocaleDateString() : '-';
+
+                    return (
+                      <tr key={i}>
+                        <td><strong>{name}</strong></td>
+                        <td>{dateStr}</td>
+                        <td>{capacity}h</td>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <div className="capacity-bar" style={{ width: '60px', marginBottom: 0 }}>
+                              <div
+                                className={`capacity-bar-fill ${String(status).toLowerCase()}`}
+                                style={{ width: `${Math.min(100, Number(percentage) || 0)}%` }}
+                              ></div>
+                            </div>
+                            <span>{percentage}%</span>
+                          </div>
+                        </td>
+                        <td><span className={`badge ${statusBadge(status)}`}>{status}</span></td>
+                      </tr>
+                    );
+                  })}
+                  {rows.length === 0 && (
+                    <tr><td colSpan="5" className="empty-state"><p>No historical records found</p></td></tr>
+                  )}
+                </tbody>
+              </table>
             ) : (
               <table>
                 <thead>
@@ -177,6 +223,7 @@ const WorkloadReports = () => {
                     <th>Workload %</th>
                     <th>Status</th>
                     <th>Remaining</th>
+                    <th>Details</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -190,29 +237,49 @@ const WorkloadReports = () => {
                     const remaining = d.remainingCapacity != null ? `${Number(d.remainingCapacity).toFixed(1)}h` : '-';
 
                     return (
-                      <tr key={i}>
-                        <td><strong>{name}</strong></td>
-                        <td>{designation}</td>
-                        <td>{capacity}h</td>
-                        <td>{assigned}h</td>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <div className="capacity-bar" style={{ width: '60px', marginBottom: 0 }}>
-                              <div
-                                className={`capacity-bar-fill ${String(status).toLowerCase()}`}
-                                style={{ width: `${Math.min(100, Number(percentage) || 0)}%` }}
-                              ></div>
+                      <React.Fragment key={i}>
+                        <tr style={{ cursor: 'pointer' }} onClick={() => setExpandedRow(expandedRow === i ? null : i)}>
+                          <td><strong>{name}</strong></td>
+                          <td>{designation}</td>
+                          <td>{capacity}h</td>
+                          <td>{assigned}h</td>
+                          <td>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <div className="capacity-bar" style={{ width: '60px', marginBottom: 0 }}>
+                                <div
+                                  className={`capacity-bar-fill ${String(status).toLowerCase()}`}
+                                  style={{ width: `${Math.min(100, Number(percentage) || 0)}%` }}
+                                ></div>
+                              </div>
+                              <span>{percentage}%</span>
                             </div>
-                            <span>{percentage}%</span>
-                          </div>
-                        </td>
-                        <td><span className={`badge ${statusBadge(status)}`}>{status}</span></td>
-                        <td><strong>{remaining}</strong></td>
-                      </tr>
+                          </td>
+                          <td><span className={`badge ${statusBadge(status)}`}>{status}</span></td>
+                          <td><strong>{remaining}</strong></td>
+                          <td>
+                            <button className="btn btn-sm btn-outline" style={{ padding: '2px 8px', fontSize: '0.75rem' }}>
+                              {expandedRow === i ? '▲ Hide' : '▼ View'}
+                            </button>
+                          </td>
+                        </tr>
+                        {expandedRow === i && (
+                          <tr style={{ backgroundColor: '#f9fafb' }}>
+                            <td colSpan="8" style={{ padding: '12px 16px' }}>
+                              <div style={{ display: 'flex', gap: '24px', fontSize: '0.85rem' }}>
+                                <div><strong>Available:</strong> {d.availableHours ?? '-'}h</div>
+                                <div><strong>Meetings:</strong> {d.meetingHours ?? '-'}h</div>
+                                <div><strong>Leave:</strong> {d.leaveHours ?? '-'}h</div>
+                                <div><strong>Non-Project:</strong> {d.nonProjectHours ?? '-'}h</div>
+                                <div><strong>Effective:</strong> <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>{capacity}h</span></div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
                     );
                   })}
                   {rows.length === 0 && (
-                    <tr><td colSpan="7" className="empty-state"><p>No records found</p></td></tr>
+                    <tr><td colSpan="8" className="empty-state"><p>No records found</p></td></tr>
                   )}
                 </tbody>
               </table>

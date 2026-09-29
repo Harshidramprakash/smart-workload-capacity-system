@@ -54,12 +54,20 @@ const TeamWorkload = () => {
                 {w.workloadPercentage >= 25 && <span className="capacity-bar-label">{w.workloadPercentage}%</span>}
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-light)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-light)', marginBottom: '8px' }}>
               <span>Workload: <strong style={{ color: 'var(--text)' }}>{w.workloadPercentage}%</strong></span>
               <span>Capacity: <strong style={{ color: 'var(--text)' }}>{w.effectiveCapacity}h</strong></span>
             </div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '4px' }}>
-              Assigned: {w.assignedEffort}h | Remaining: {w.remainingCapacity?.toFixed(1)}h
+            <div style={{ fontSize: '0.75rem', backgroundColor: '#f8f9fa', padding: '8px', borderRadius: '4px', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}><span>Available:</span> <span>{w.availableHours}h</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}><span>Meetings:</span> <span>{w.meetingHours}h</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}><span>Leave:</span> <span>{w.leaveHours}h</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}><span>Non-Project:</span> <span>{w.nonProjectHours}h</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-light)', paddingTop: '4px', fontWeight: 600 }}><span>Effective:</span> <span>{w.effectiveCapacity}h</span></div>
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-light)', display: 'flex', justifyContent: 'space-between' }}>
+              <span>Assigned: <strong style={{ color: 'var(--text)' }}>{w.assignedEffort}h</strong></span>
+              <span>Remaining: <strong style={{ color: 'var(--success)' }}>{w.remainingCapacity?.toFixed(1)}h</strong></span>
             </div>
           </div>
         ))}

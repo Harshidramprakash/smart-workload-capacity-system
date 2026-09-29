@@ -1,0 +1,31 @@
+flowchart TD
+    UI[React/Vite Frontend]
+    Gateway[API Gateway :5000]
+    
+    subgraph Microservices
+        US[User Service :5001]
+        PS[Project Service :5002]
+        TS[Task Service :5003]
+        CS[Capacity Analysis Service :5004]
+        RS[Report Service :5005]
+        NS[Notification Service :5006]
+    end
+    
+    DB[(MongoDB)]
+    
+    Auth[(Authentication / SSO)]
+    Cal[(Calendar)]
+    HR[(HRMS / Leave)]
+    SMTP[(SMTP)]
+    S3[(S3 / Cloudinary)]
+    
+    UI -->|HTTP| Gateway
+    Gateway --> US & PS & TS & CS & RS & NS
+    
+    US & PS & TS & CS & RS & NS -->|Mongoose| DB
+    
+    US --> Auth
+    CS --> Cal
+    CS --> HR
+    NS --> SMTP
+    RS --> S3

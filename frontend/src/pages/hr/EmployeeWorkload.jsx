@@ -58,7 +58,7 @@ const EmployeeWorkload = () => {
       <div className="card">
         <div className="table-container">
           <table>
-            <thead><tr><th>Employee</th><th>Designation</th><th>Available</th><th>Meetings</th><th>Leave</th><th>Effective Capacity</th><th>Assigned</th><th>Remaining</th><th>Workload %</th><th>Status</th></tr></thead>
+            <thead><tr><th>Employee</th><th>Designation</th><th>Available</th><th>Meetings</th><th>Leave</th><th>Non-Project</th><th>Effective Capacity</th><th>Assigned</th><th>Remaining</th><th>Workload %</th><th>Status</th></tr></thead>
             <tbody>
               {workload.map(w => (
                 <tr key={w.employee_id}>
@@ -67,6 +67,7 @@ const EmployeeWorkload = () => {
                   <td>{w.availableHours}h</td>
                   <td>{w.meetingHours}h</td>
                   <td>{w.leaveHours}h</td>
+                  <td>{w.nonProjectHours}h</td>
                   <td>{w.effectiveCapacity}h</td>
                   <td>{w.assignedEffort}h</td>
                   <td><strong>{w.remainingCapacity?.toFixed(1)}h</strong></td>

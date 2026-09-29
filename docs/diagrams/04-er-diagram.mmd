@@ -1,0 +1,20 @@
+erDiagram
+    User ||--o{ UserRole : has
+    Role ||--o{ UserRole : assigned_to
+    User ||--|| Employee : is_a
+    Employee ||--o{ TeamMember : acts_as
+    Team ||--o{ TeamMember : contains
+    
+    Project ||--o{ Sprint : contains
+    Sprint ||--o{ Task : contains
+    Task ||--o{ TaskAssignment : assigned_via
+    Employee ||--o{ TaskAssignment : receives
+    TaskAssignment ||--o{ TimeLog : tracks
+    
+    Employee ||--o{ Availability : provides
+    Employee ||--o{ Workload : generates
+    Employee ||--o{ CapacityAnalysis : evaluated_in
+    
+    User ||--o{ Notification : receives
+    User ||--o{ Report : generates
+    SystemSetting ||--o{ SystemSetting : configuration

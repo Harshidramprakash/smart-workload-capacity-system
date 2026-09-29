@@ -1,0 +1,53 @@
+classDiagram
+    class User {
+      +String name
+      +String email
+      +String password
+    }
+    class Role {
+      +String roleName
+    }
+    class Employee {
+      +String designation
+      +String status
+    }
+    class Team {
+      +String teamName
+    }
+    class Project {
+      +String projectName
+      +Date startDate
+      +Date endDate
+    }
+    class Sprint {
+      +String sprintName
+      +Date startDate
+      +Date endDate
+    }
+    class Task {
+      +String title
+      +String priority
+      +Number estimated_effort
+      +String status
+    }
+    class Availability {
+      +Date date
+      +Number available_hours
+      +Number meeting_hours
+      +Number leave_hours
+    }
+    class Workload {
+      +Date date
+      +Number effective_capacity
+      +Number workload_percentage
+      +String utilization_status
+    }
+    
+    User "1" *-- "1" Employee
+    User "1" -- "*" Role : has
+    Employee "*" -- "*" Team : member
+    Project "1" *-- "*" Sprint
+    Sprint "1" *-- "*" Task
+    Task "*" -- "1" Employee : assigned_to
+    Employee "1" *-- "*" Availability
+    Employee "1" *-- "*" Workload

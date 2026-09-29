@@ -1,0 +1,21 @@
+stateDiagram-v2
+    [*] --> CreateProject : Manager
+    CreateProject --> CreateSprint
+    CreateSprint --> CreateTask
+    CreateTask --> SetEffort : Priority & Estimated Effort
+    SetEffort --> CapacityAnalysis
+    CapacityAnalysis --> EvaluateEmployees : Eligible candidates
+    EvaluateEmployees --> GenerateRecommendation : Rule-based engine
+    GenerateRecommendation --> ReviewRecommendation : Manager reviews
+    
+    state AssignmentDecision <<choice>>
+    ReviewRecommendation --> AssignmentDecision
+    AssignmentDecision --> AssignTask : Assign / Reassign
+    AssignmentDecision --> DoNotAssign : Skip
+    DoNotAssign --> [*]
+    
+    AssignTask --> EmployeeExecution : Employee starts work
+    EmployeeExecution --> UpdateProgress : Status / Actual Effort
+    UpdateProgress --> RecalculateWorkload
+    RecalculateWorkload --> ManagerHRReview : Reports updated
+    ManagerHRReview --> [*]

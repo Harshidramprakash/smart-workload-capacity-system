@@ -1,0 +1,28 @@
+flowchart TD
+    Client(Client Browser)
+    
+    subgraph FrontendServer ["Frontend Server"]
+        React(React/Vite Frontend :5173)
+    end
+    
+    subgraph AppServer ["API Gateway Node"]
+        Gateway(API Gateway :5000)
+    end
+    
+    subgraph MicroserviceNodes ["Microservices Cluster"]
+        US(User Service :5001)
+        PS(Project Service :5002)
+        TS(Task Service :5003)
+        CS(Capacity Analysis Service :5004)
+        RS(Report Service :5005)
+        NS(Notification Service :5006)
+    end
+    
+    subgraph DBServer ["Database Node"]
+        Mongo[(MongoDB :27017)]
+    end
+    
+    Client -->|HTTP/HTTPS| React
+    React -->|REST API| Gateway
+    Gateway --> US & PS & TS & CS & RS & NS
+    US & PS & TS & CS & RS & NS -->|MongoDB Protocol| Mongo

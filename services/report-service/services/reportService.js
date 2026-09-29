@@ -16,7 +16,7 @@ const fetchEmployeeWorkloadFromCapacity = async (employeeId) => {
   } catch (err) {
     console.error(`[Report Service] Failed to fetch capacity for ${employeeId}:`, err.message);
   }
-  return { effectiveCapacity: 8, assignedEffort: 0, workloadPercentage: 0, utilizationStatus: 'Low', remainingCapacity: 8 };
+  return { effectiveCapacity: 8, availableHours: 8, meetingHours: 0, leaveHours: 0, nonProjectHours: 0, assignedEffort: 0, workloadPercentage: 0, utilizationStatus: 'Low', remainingCapacity: 8 };
 };
 
 /**
@@ -41,6 +41,10 @@ const generateEmployeeWorkloadReport = async (params = {}) => {
       email: emp.user_id.email,
       designation: emp.designation,
       effectiveCapacity: workload.effectiveCapacity,
+      availableHours: workload.availableHours,
+      meetingHours: workload.meetingHours,
+      leaveHours: workload.leaveHours,
+      nonProjectHours: workload.nonProjectHours,
       assignedEffort: workload.assignedEffort,
       workloadPercentage: workload.workloadPercentage,
       utilizationStatus: workload.utilizationStatus,
@@ -84,6 +88,10 @@ const generateTeamWorkloadReport = async (teamId = null) => {
         name: member.user_id.name,
         email: member.user_id.email,
         effectiveCapacity: workload.effectiveCapacity,
+        availableHours: workload.availableHours,
+        meetingHours: workload.meetingHours,
+        leaveHours: workload.leaveHours,
+        nonProjectHours: workload.nonProjectHours,
         assignedEffort: workload.assignedEffort,
         workloadPercentage: workload.workloadPercentage,
         utilizationStatus: workload.utilizationStatus
@@ -128,6 +136,10 @@ const generateCapacityReport = async () => {
       name: emp.user_id.name,
       designation: emp.designation,
       effectiveCapacity: workload.effectiveCapacity,
+      availableHours: workload.availableHours,
+      meetingHours: workload.meetingHours,
+      leaveHours: workload.leaveHours,
+      nonProjectHours: workload.nonProjectHours,
       assignedEffort: workload.assignedEffort,
       workloadPercentage: workload.workloadPercentage,
       utilizationStatus: workload.utilizationStatus,
@@ -196,11 +208,11 @@ const exportReportToStorage = async (reportType, reportContent) => {
       csvRows.push([`"${t.teamName}"`, t.memberCount, `${t.averageWorkload}%`].join(','));
     }
   } else {
-    csvRows.push(['Name', 'Designation', 'Effective Capacity (h)', 'Assigned Effort (h)', 'Workload %', 'Status', 'Remaining Capacity (h)'].join(','));
+    csvRows.push(['Name', 'Designation', 'Available (h)', 'Meetings (h)', 'Leave (h)', 'Non-Project (h)', 'Effective Capacity (h)', 'Assigned Effort (h)', 'Workload %', 'Status', 'Remaining Capacity (h)'].join(','));
     for (const r of rows) {
       const name = r.employeeName || r.name || 'N/A';
       const desig = r.designation || '';
-      csvRows.push([`"${name}"`, `"${desig}"`, r.effectiveCapacity ?? '', r.assignedEffort ?? '', `${r.workloadPercentage ?? ''}%`, r.utilizationStatus ?? '', r.remainingCapacity ?? ''].join(','));
+      csvRows.push([`"${name}"`, `"${desig}"`, r.availableHours ?? '', r.meetingHours ?? '', r.leaveHours ?? '', r.nonProjectHours ?? '', r.effectiveCapacity ?? '', r.assignedEffort ?? '', `${r.workloadPercentage ?? ''}%`, r.utilizationStatus ?? '', r.remainingCapacity ?? ''].join(','));
     }
   }
 
