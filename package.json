@@ -4,7 +4,7 @@
   "description": "Smart Workload Capacity Analysis and Task Allocation System - Microservices",
   "private": true,
   "scripts": {
-    "install:all": "npm install && npm --prefix gateway install && npm --prefix frontend install",
+    "install:all": "npm install && npm --prefix gateway install && npm --prefix frontend install && npm --prefix services/user-service install && npm --prefix services/project-service install && npm --prefix services/task-service install && npm --prefix services/capacity-service install && npm --prefix services/report-service install && npm --prefix services/notification-service install",
     "install:gateway": "npm --prefix gateway install",
     "install:user": "npm --prefix services/user-service install",
     "install:project": "npm --prefix services/project-service install",

@@ -29,7 +29,14 @@ const Report = require('./shared/models/Report');
 
 const seedDatabase = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/smart_workload';
+    let mongoUri = process.env.MONGO_URI;
+    if (!mongoUri) {
+      if (process.env.NODE_ENV === 'production') {
+        console.error('FATAL: MONGO_URI is missing in production.');
+        process.exit(1);
+      }
+      mongoUri = 'mongodb://127.0.0.1:27017/smart_workload';
+    }
     console.log(`Connecting to MongoDB: ${mongoUri}...`);
     await mongoose.connect(mongoUri);
     console.log('MongoDB Connected successfully.');

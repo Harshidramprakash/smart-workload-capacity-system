@@ -13,7 +13,11 @@ dotenv.config({ path: require('path').resolve(__dirname, '../.env') });
 const app = express();
 
 // --- Middleware ---
-app.use(cors());
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || '*',
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 
 // Service URLs
@@ -119,8 +123,8 @@ app.get('/api/health', async (req, res) => {
 });
 
 // --- Start Gateway ---
-const PORT = process.env.PORT_GATEWAY || 5000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || process.env.PORT_GATEWAY || 5000;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n=== API GATEWAY ===`);
   console.log(`Gateway running on port ${PORT}`);
   console.log(`Routing to services:`);

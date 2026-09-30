@@ -41,7 +41,7 @@ app.use(errorHandler);
 
 // --- Start ---
 const PORT = process.env.PORT_USER_SERVICE || 5001;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`[User Service] Running on port ${PORT}`);
 });
 

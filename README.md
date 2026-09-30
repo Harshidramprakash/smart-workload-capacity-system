@@ -157,5 +157,36 @@ Development and UI/UX polish completed. Verified functional. Ready for academic 
 * Live WebSocket updates for notifications.
 * Direct integration with real Google Calendar and enterprise HRMS APIs.
 
-## 23. License
+## 24. Render Deployment
+
+This project is fully ready for deployment on Render using two services:
+
+### A. Backend (Render Web Service)
+1. **Environment:** Node
+2. **Build Command:** `npm run install:all`
+3. **Start Command:** `node start-all.js`
+4. **Health Check Path:** `/api/health`
+5. **Environment Variables Required:**
+   - `NODE_ENV`: production
+   - `MONGO_URI`: Your MongoDB Atlas connection string (e.g. `mongodb+srv://...`)
+   - `JWT_SECRET`: A secure random string for signing JWT tokens
+   - `JWT_EXPIRE`: `7d`
+   - `FRONTEND_URL`: URL of your deployed frontend (e.g. `https://smart-workload-frontend.onrender.com`)
+
+### B. Frontend (Render Static Site)
+1. **Environment:** Static Site
+2. **Root Directory:** `frontend`
+3. **Build Command:** `npm install && npm run build`
+4. **Publish Directory:** `dist`
+5. **Environment Variables Required:**
+   - `VITE_API_URL`: URL of your deployed backend API (e.g. `https://smart-workload-backend.onrender.com/api`)
+6. **Routing Configuration:** Add a Rewrite rule in Render's configuration to handle React Router:
+   - Source: `/*`
+   - Destination: `/index.html`
+   - Action: `Rewrite`
+
+### C. MongoDB Atlas
+For production, you must use a hosted MongoDB service like MongoDB Atlas. Do not use the local `mongo-server.js` or `mongodb://127.0.0.1` in production. Ensure that your Atlas network access allows Render's IP addresses (or allows all via `0.0.0.0/0`).
+
+## License
 This is an academic Software Engineering project.
