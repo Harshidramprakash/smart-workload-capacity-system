@@ -18,7 +18,7 @@ const connectDB = async (serviceName = 'Service') => {
 
   try {
     const conn = await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 3000
+      serverSelectionTimeoutMS: 10000 // Increased from 3000 to 10000 to handle cloud DNS resolution delays
     });
     // Register all shared schemas in Mongoose memory to enable cross-model population
     require('../models');
